@@ -1,0 +1,33 @@
+package GUI;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JTextArea;
+
+public class cmdGUI {
+	private JFrame frameMain = new JFrame("INTROOS");
+	private JPanel panelMain = new JPanel();
+	private final JScrollPane scrlMain = new JScrollPane();
+	private final JTextPane txtCMD = new JTextPane();
+	private final JTextField txtInput = new JTextField();
+	
+	public cmdGUI(){
+		txtInput.setColumns(10);
+		frameMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameMain.setTitle("INTROOS ");
+		
+		frameMain.getContentPane().add(panelMain);
+		panelMain.setLayout(new MigLayout("", "[20.00][500.00,grow][150.00][20.00]", "[20.00][442.00,grow][40.00][20.00]"));
+		
+		panelMain.add(scrlMain, "cell 1 1 2 1,grow");
+		
+		scrlMain.setViewportView(txtCMD);
+		
+		panelMain.add(txtInput, "cell 1 2,grow");
+	}
+}

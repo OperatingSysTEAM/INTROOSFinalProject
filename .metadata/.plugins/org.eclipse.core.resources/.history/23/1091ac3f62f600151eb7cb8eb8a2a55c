@@ -1,0 +1,10 @@
+package GUI;
+
+import javax.swing.JFrame;
+
+public class cmdGUI {
+	public JFrame jFrame = new JFrame();
+	public cmdGUI(){
+		
+	}
+}
