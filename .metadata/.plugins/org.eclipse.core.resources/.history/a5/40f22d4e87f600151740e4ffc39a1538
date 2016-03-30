@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Desktop.Action;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -10,8 +11,10 @@ import javax.swing.JTextPane;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class cmdGUI{
 	private JFrame frameMain = new JFrame("INTROOS");
@@ -21,7 +24,7 @@ public class cmdGUI{
 	private JTextField txtInput = new JTextField();
 	
 	public cmdGUI(){
-		panelMain.setLayout(new MigLayout("", "[927.00,grow]", "[435.00,grow][35px:35px]"));
+		panelMain.setLayout(new MigLayout("", "[927.00,grow]", "[435.00,grow][35.00]"));
 		
 		panelMain.add(scrlMain, "cell 0 0,grow");
 		
