@@ -1,3 +1,5 @@
+package main;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -124,6 +126,45 @@ public class Main {
 		name[0] = "User: " + name[0];
 		
 		return name[0];
+	}
+	
+	public boolean errorChecking(String[] line)
+	{
+		boolean error = false;
+		switch(line[0].toUpperCase())
+		{
+			case "CD":
+				if (line.length == 2)
+					error = false;
+				else error = true;
+				break;
+			case "DIR":
+				if (line.length == 2)
+					error = false;
+				else error = true;
+				break;
+			case "COPY":
+				if (line.length == 3)
+					error = false;
+				else error = true;
+				break;
+			case "MOVE":
+				if (line.length == 3)
+					error = false;
+				else error = true;
+				break;
+			case "DEL":
+				if (line.length == 2)
+					error = false;
+				else error = true;
+				break;
+			case "REN":
+				if (line.length == 3)
+					error = false;
+				else error = true;
+				break;
+		}
+		return error;
 	}
 
 }
