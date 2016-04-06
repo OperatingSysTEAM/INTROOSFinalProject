@@ -26,6 +26,9 @@ public class cmdGUI{
 	private JScrollPane scrlMain = new JScrollPane();
 	private JTextPane txtCMD = new JTextPane();
 	private JTextField txtInput = new JTextField();
+	private String input;
+	private String parameter1 = "";
+	private String parameter2 = "";
 	
 	private ArrayList<String> inputs = new ArrayList<String>();
 	
@@ -55,72 +58,184 @@ public class cmdGUI{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				txtCMD.setText(txtCMD.getText().concat(txtInput.getText() + "\n"));
-				txtInput.setText("");
 				
-				int index = 0;
+				System.out.println("Input: ");
+				input = txtInput.getText();						// scans input 
+				System.out.println("Your input is: " + input);	// for checking
 				
-				inputs.add(txtInput.getText());
-				String[] line = inputs.get(index).split(" ");
-				String firstWord = line[0];
+				String[] line = input.split(" ");				// splits the whole line per word
 				
-				File s;
-				File d;
-				// Added try-catch because eclipse said so
-				if (errorChecking(line) == false)
+				boolean error = false;
+				switch (line[0].toLowerCase()) 					// command (first word of the line)
 				{
-					// and i think iincrement mo dapat si "index"? 
-					switch (firstWord.toLowerCase())
-					{
-						case "cd":
-							
-						case "cd..":
-						
-						case "dir":
-						
-						case "copy":
-							s = new File(line[1]);
-							d = new File (line[2]);
-							
-							try {
-								copyFile(s, d);
-							} catch (IOException e) {
-								System.out.println("Error Copy");
+					case "copy": 
+					case "ren":
+					case "move":
+						boolean quote = false;					// checker if there is a " at the end of the word
+						int i = 1;			
+						parameter1 = "";
+						parameter2 = "";
+						if(line[i].charAt(0) == '\"')
+						{
+							for (i = 1; i < line.length; i++)
+							{
+								if (line[i].charAt(line[i].length()-1) == '\"')		// checks if current word has " at the end of the word 
+								{
+									quote = true;									
+									break;
+								}
 							}
-							break;
-						case "move":
-							s = new File(line[1]);
-							d = new File (line[2]);
-							
-							try {
-								moveFile(s, d);
-							} catch (IOException e) {
-								System.out.println("Error Move");
+							if (quote == true)										// if word has " at the end
+							{
+								for (int a = 1; a <= i; a++)
+									parameter1 = parameter1 + " " + line[a];		// concatenates 
+								parameter1 = parameter1.substring(2, parameter1.length()-1);
 							}
-							break;
-						case "ren":
-							// rename function here
-							break;
-						case "del": 
-							s = new File(line[1]);
+						}
+						else											// if there is no " "
+							parameter1 = line[i];
+						
+						i++;											// counter for next word
+						System.out.println("I = " + i);
+						
+						try
+						{
+							quote = false;								// resets
+							while (line[i] == " ")
+								i++;
 							
+							for (int x = 0; x <= i; x++)
+								System.out.println(x + " word = " + line[x] + "*");
+							
+							if(line[i].charAt(0) == '\"')				// if word starts with "
+							{
+								int b = i;
+								for (b = i; b < line.length; b++)		// checks if current word (after the first parameter) has " at the end
+								{
+									if (line[b].charAt(line[b].length()-1) == '\"')
+									{
+										quote = true;
+										break;
+									}
+								}
+								if (quote == true)
+								{
+									for (int a = i; a <= b; a++)
+										parameter2 = parameter2 + " " + line[a];
+									parameter2 = parameter2.substring(2, parameter2.length()-1);
+								}
+							}
+							else
+								parameter2 = line[i];
+							
+							if (line[i++].equals(null) == false)
+							{
+								error = true;
+								System.out.println("Sobra parameters!");
+							}
+							
+							System.out.println("First parameter is: *" + parameter1);
+							System.out.println("Second parameter is: *" + parameter2);
+						}
+						catch(ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e)
+						{
+							System.out.println("Error!");
+							error = true;
+						}
+						
+						if (error == false)
+						{
+							File s = new File(parameter1);
+							File d = new File(parameter2);
+							
+							switch (line[0].toLowerCase())
+							{
+								case "copy":
+								try {
+									copyFile(s, d);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									//e1.printStackTrace();
+								}
+									break;
+								case "move":
+								try {
+									moveFile(s, d);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									//e.printStackTrace();
+								}
+									break;
+								case "ren":
+									// rename function
+									break;
+							}
+						}
+						else
+						{
+							// errorrrrr
+						}
+						break;
+						
+					case "del":
+						quote = false;					// checker if there is a " at the end of the word
+						i = 1;			
+						parameter1 = "";
+						parameter2 = "";
+						if(line[i].charAt(0) == '\"')
+						{
+							for (i = 1; i < line.length; i++)
+							{
+								if (line[i].charAt(line[i].length()-1) == '\"')		// checks if current word has " at the end of the word 
+								{
+									quote = true;									
+									break;
+								}
+							}
+							if (quote == true)										// if word has " at the end
+							{
+								for (int a = 1; a <= i; a++)
+									parameter1 = parameter1 + " " + line[a];		// concatenates 
+								parameter1 = parameter1.substring(2, parameter1.length()-1);
+							}
+						}
+						else											// if there is no " "
+							parameter1 = line[i];
+						
+						System.out.println("Parameter is: " + parameter1);
+						
+						try
+						{
+							i++;
+							if (line[i].equals(null) == false)
+							{
+								error = true;
+								System.out.println("Too many parameters!");
+							}
+								
+						}
+						catch (ArrayIndexOutOfBoundsException e)
+						{
+							
+						}
+						
+						if (error == false)
+						{
+							File s = new File(parameter1);
 							try {
 								deleteFile(s);
 							} catch (IOException e) {
-								System.out.println("Error Delete");
+								// TODO Auto-generated catch block
+								//e.printStackTrace();
 							}
-							break;
-					}
-				}
-				else
-				{
-					txtCMD.setText(txtCMD.getText().concat("\nError input!"));
-					//di yata need ito kasi you're making a new "line" everytime Enter button
-					//is pressed 
-					//line = "";
+						}
+						break;
+						
+					default:
+						System.out.println("No such instruction!");
 				}
 				
-				
-				
+				txtInput.setText("");
 			}
 		});
 	}
