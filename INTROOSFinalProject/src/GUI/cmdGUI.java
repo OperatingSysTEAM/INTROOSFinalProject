@@ -12,8 +12,10 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.AbstractAction;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -54,6 +56,8 @@ public class cmdGUI{
 		frameMain.setVisible(true);
 		frameMain.pack();
 		
+		txtCMD.setText("C:\\>");
+		
 		txtInput.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -62,274 +66,395 @@ public class cmdGUI{
 				System.out.println("Input: ");
 				input = txtInput.getText();						// scans input 
 				System.out.println("Your input is: " + input);	// for checking
+				String currPath = "C:";
+				boolean error = false;
 				
 				String[] line = input.split(" ");				// splits the whole line per word
 				
-				boolean error = false;
-				switch (line[0].toLowerCase()) 					// command (first word of the line)
-				{
+				switch (line[0].toLowerCase()){ 					// command (first word of the line)
 					case "copy": 
 					case "ren":
-					case "move":
-						boolean quote = false;					// checker if there is a " at the end of the word
-						int i = 1;			
-						parameter1 = "";
-						parameter2 = "";
-						if(line[i].charAt(0) == '\"')
-						{
-							for (i = 1; i < line.length; i++)
-							{
-								if (line[i].charAt(line[i].length()-1) == '\"')		// checks if current word has " at the end of the word 
-								{
-									quote = true;									
-									break;
-								}
-							}
-							if (quote == true)										// if word has " at the end
-							{
-								for (int a = 1; a <= i; a++)
-									parameter1 = parameter1 + " " + line[a];		// concatenates 
-								parameter1 = parameter1.substring(2, parameter1.length()-1);
-							}
-						}
-						else											// if there is no " "
-							parameter1 = line[i];
-						
-						i++;											// counter for next word
-						System.out.println("I = " + i);
-						
-						try
-						{
-							quote = false;								// resets
-							while (line[i] == " ")
-								i++;
-							
-							for (int x = 0; x <= i; x++)
-								System.out.println(x + " word = " + line[x] + "*");
-							
-							if(line[i].charAt(0) == '\"')				// if word starts with "
-							{
-								int b = i;
-								for (b = i; b < line.length; b++)		// checks if current word (after the first parameter) has " at the end
-								{
-									if (line[b].charAt(line[b].length()-1) == '\"')
-									{
-										quote = true;
-										break;
+					case "move":	boolean quote = false;					// checker if there is a " at the end of the word
+									int i = 1;			
+									parameter1 = "";
+									parameter2 = "";
+									if(line[i].charAt(0) == '\"'){
+										for (i = 1; i < line.length; i++){
+											if (line[i].charAt(line[i].length()-1) == '\"'){		// checks if current word has " at the end of the word 
+												quote = true;									
+												break;
+											}
+										}
+										if (quote == true){									// if word has " at the end
+											for (int a = 1; a <= i; a++)
+												parameter1 = parameter1 + " " + line[a];		// concatenates 
+											parameter1 = parameter1.substring(2, parameter1.length()-1);
+										}
 									}
-								}
-								if (quote == true)
-								{
-									for (int a = i; a <= b; a++)
-										parameter2 = parameter2 + " " + line[a];
-									parameter2 = parameter2.substring(2, parameter2.length()-1);
-								}
-							}
-							else
-								parameter2 = line[i];
-							
-							if (line[i++].equals(null) == false)
-							{
-								error = true;
-								System.out.println("Sobra parameters!");
-							}
-							
-							System.out.println("First parameter is: *" + parameter1);
-							System.out.println("Second parameter is: *" + parameter2);
-						}
-						catch(ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e)
-						{
-							System.out.println("Error!");
-							error = true;
-						}
-						
-						if (error == false)
-						{
-							File s = new File(parameter1);
-							File d = new File(parameter2);
-							
-							switch (line[0].toLowerCase())
-							{
-								case "copy":
-								try {
-									copyFile(s, d);
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									//e1.printStackTrace();
-								}
+									else											// if there is no " "
+										parameter1 = line[i];
+									
+									i++;											// counter for next word
+									System.out.println("I = " + i);
+									
+									try{
+										quote = false;								// resets
+										while (line[i] == " ")
+											i++;
+										
+										for (int x = 0; x <= i; x++)
+											System.out.println(x + " word = " + line[x] + "*");
+										
+										if(line[i].charAt(0) == '\"'){				// if word starts with "
+											int b = i;
+											for (b = i; b < line.length; b++){		// checks if current word (after the first parameter) has " at the end
+												if (line[b].charAt(line[b].length()-1) == '\"'){
+													quote = true;
+													break;
+												}
+											}
+											if (quote == true){
+												for (int a = i; a <= b; a++)
+													parameter2 = parameter2 + " " + line[a];
+												parameter2 = parameter2.substring(2, parameter2.length()-1);
+											}
+										}
+										else
+											parameter2 = line[i];
+										
+										if (line[i++].equals(null) == false){
+											error = true;
+											System.out.println("Sobra parameters!");
+										}
+										
+										System.out.println("First parameter is: *" + parameter1);
+										System.out.println("Second parameter is: *" + parameter2);
+									}catch(ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e){
+										System.out.println("Error!");
+										error = true;
+									}
+									
+									if (error == false){
+										File s = new File(parameter1);
+										File d = new File(parameter2);
+										
+										switch (line[0].toLowerCase()){
+											case "copy":	copyFile(s, d);
+															break;
+											case "move":	moveFile(s, d);
+															break;
+											case "ren":		// rename function
+															break;
+										}
+									}
+									else{
+										// errorrrrr
+									}
 									break;
-								case "move":
-								try {
-									moveFile(s, d);
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									//e.printStackTrace();
-								}
-									break;
-								case "ren":
-									// rename function
-									break;
-							}
-						}
-						else
-						{
-							// errorrrrr
-						}
-						break;
-						
-					case "del":
-						quote = false;					// checker if there is a " at the end of the word
-						i = 1;			
-						parameter1 = "";
-						parameter2 = "";
-						if(line[i].charAt(0) == '\"')
-						{
-							for (i = 1; i < line.length; i++)
-							{
-								if (line[i].charAt(line[i].length()-1) == '\"')		// checks if current word has " at the end of the word 
-								{
-									quote = true;									
-									break;
-								}
-							}
-							if (quote == true)										// if word has " at the end
-							{
-								for (int a = 1; a <= i; a++)
-									parameter1 = parameter1 + " " + line[a];		// concatenates 
-								parameter1 = parameter1.substring(2, parameter1.length()-1);
-							}
-						}
-						else											// if there is no " "
-							parameter1 = line[i];
-						
-						System.out.println("Parameter is: " + parameter1);
-						
-						try
-						{
-							i++;
-							if (line[i].equals(null) == false)
-							{
-								error = true;
-								System.out.println("Too many parameters!");
-							}
+					case "del":	quote = false;					// checker if there is a " at the end of the word
+								i = 1;			
+								parameter1 = "";
+								parameter2 = "";
 								
-						}
-						catch (ArrayIndexOutOfBoundsException e)
-						{
-							
-						}
-						
-						if (error == false)
-						{
-							File s = new File(parameter1);
-							try {
-								deleteFile(s);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								//e.printStackTrace();
-							}
-						}
-						break;
-						
-					default:
-						System.out.println("No such instruction!");
+								if(line[i].charAt(0) == '\"'){
+									for (i = 1; i < line.length; i++){
+										if (line[i].charAt(line[i].length()-1) == '\"'){		// checks if current word has " at the end of the word 
+											quote = true;									
+											break;
+										}
+									}
+									if (quote == true){
+										for (int a = 1; a <= i; a++)
+											parameter1 = parameter1 + " " + line[a];		// concatenates 
+										parameter1 = parameter1.substring(2, parameter1.length()-1);
+									}
+								}else											// if there is no " "
+									parameter1 = line[i];
+								
+								System.out.println("Parameter is: " + parameter1);
+								
+								try{
+									i++;
+									if (line[i].equals(null) == false){
+										error = true;
+										System.out.println("Too many parameters!");
+									}
+								}catch (ArrayIndexOutOfBoundsException e){
+									
+								}
+								
+								if (error == false){
+									File s = new File(parameter1);
+									
+									deleteFile(s);
+								}
+								break;
+					case "cd":	if(line.length > 1){
+									i = 0;
+									String nextPath = "\\";
+									for(i = 1; i < line.length; i++)
+										nextPath = nextPath + line[i] + " ";
+									nextPath = currPath + nextPath.substring(0, nextPath.length() - 1);
+									if(new File(nextPath).isDirectory())
+										currPath = nextPath;
+									else{
+										System.out.println("The system cannot find the path specified.\n");
+										txtCMD.setText(txtCMD.getText().concat("The system cannot find the path specified.\n\n"));
+									}
+								}else{
+									System.out.println(currPath);
+									System.out.println();
+									txtCMD.setText(txtCMD.getText().concat(currPath + "\n\n"));
+								}
+								break;
+					case "cd..":	for(i = currPath.length() - 1; i > -1; i--)
+										if(currPath.charAt(i) == '\\'){
+											currPath = currPath.substring(0, i);
+											break;
+										}
+									break;
+					case "dir":	File dir;
+								if(currPath.length() == 2 && currPath.toLowerCase().charAt(0) >= 'a' && currPath.toLowerCase().charAt(0) <= 'z' && currPath.toLowerCase().charAt(1) == ':'){
+									dir = new File(currPath + "\\");
+									System.out.println("   Directory of " + currPath + "\\\n");
+									txtCMD.setText(txtCMD.getText().concat("   Directory of " + currPath + "\\\n\n"));
+								}
+								else{
+									dir = new File(currPath);
+									System.out.println("   Directory of " + currPath + "\n");
+									txtCMD.setText(txtCMD.getText().concat("   Directory of " + currPath + "\n\n"));
+								}
+								
+								if(showContents(dir)){
+									System.out.println("This directory contains 0 files.");
+									txtCMD.setText(txtCMD.getText().concat("This directory contains 0 files.\n"));
+								}
+								System.out.println("");
+								txtCMD.setText(txtCMD.getText().concat("\n"));
+								break;
+					case "run":	if(line.length > 1){
+									String name = "";
+									for(i = 1; i < line.length; i++)
+										name = line[i] + " ";
+									name = name.substring(0, name.length() - 1);
+									
+									compileCFile(currPath, name);
+									runCFile(currPath, name);
+								}
+								break;
+					case "": break;
+					default:	System.out.println("'" + line[0] + "' is not recognized as an internal or external command,");
+								System.out.println("operable program or batch file.");
+								txtCMD.setText(txtCMD.getText().concat("'" + line[0] + "' is not recognized as an internal or external command,\n"));
+								txtCMD.setText(txtCMD.getText().concat("operable program or batch file.\n"));
+								break;
 				}
 				
 				txtInput.setText("");
+				if(currPath.length() == 2 && currPath.toLowerCase().charAt(0) >= 'a' && currPath.toLowerCase().charAt(0) <= 'z' && currPath.toLowerCase().charAt(1) == ':'){
+					txtCMD.setText(txtCMD.getText().concat(currPath + "\\>"));
+				}else
+					txtCMD.setText(txtCMD.getText().concat(currPath + ">"));
 			}
 		});
 	}
 	
-	private static void copyFile( File from, File to ) throws IOException {
-	    Files.copy( from.toPath(), to.toPath() );
+	private static void copyFile( File from, File to ){
+		int nCopy = 0;
+		String p = to.getAbsolutePath().toString();
+		String d = "";
+		String ex = "";
+		
+		try{
+			while(to.exists()){
+				nCopy++;
+				for(int i = p.length() - 1; i >= 0; i--){
+					if(p.charAt(i) == '.'){
+						if(nCopy == 1){
+							d = p.substring(0, i);
+							ex = p.substring(i);
+							p = p.substring(0, i) + " - Copy" + p.substring(i);
+						}else{
+							p = d + " - Copy (" + nCopy + ")" + ex;
+						}
+						to = new File(p);
+					}
+				}
+			}
+		    Files.copy( from.toPath(), to.toPath() );
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	private static void deleteFile( File from ) throws IOException {
-	    Files.delete( from.toPath() );
+	private static void deleteFile( File from ){
+		try{
+			Files.delete( from.toPath() );
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	private static void moveFile( File from, File to ) throws IOException {
+	private static void moveFile( File from, File to ){
 	    copyFile(from, to);
 	    deleteFile(from);
 	}
 	
-	private static void showContents( File dir ) throws IOException {
+	private boolean showContents( File dir ){
 		 File[] filesList = dir.listFiles();
-	        for(File f : filesList){
-	            if(f.isDirectory())
-	                showContents(f);
+		 boolean empty = true;
+		 
+		 try{
+			 for(File f : filesList){
 	            if(f.isFile()){
-	                System.out.println(f.getName());
-	                System.out.println(getSize(f));
-	                System.out.println(getDateCreated(f));
-	                System.out.println(getDateModified(f));
-	                System.out.println(getUser(f));
+	            	String file = "";
+		        	file += getDateCreated(f) + "     " + getDateModified(f) + "      " + getSize(f);
+		        	for(int i = file.length(); i < 42; i++)
+		        		file += " ";
+		        	file += getUser(f) + "     ";
+		        	for(int i = file.length(); i < 55; i++)
+		        		file += " ";
+		        	file += f.getName();
+		        	String name = f.getName();
+		        	for(int i = 0; i < name.length(); i++)
+		        		if(name.charAt(i) == '.'){
+		        			name = name.substring(i, name.length());
+		        			break;
+		        		}
+		        	if(!name.toLowerCase().equals(".sys") && !name.toLowerCase().equals(".bat") && !name.toLowerCase().equals(".ini") && !name.toLowerCase().equals(".db")){
+		        		if(f.getName().length() >= 10 && f.getName().toLowerCase().substring(0, 10).equals("ntuser.dat"));
+		        		else{
+		        			System.out.println(file);
+		        			txtCMD.setText(txtCMD.getText().concat(file + "\n"));
+		        			empty = false;
+		        		}
+		        	}
 	            }
-	        }
+		     }
+		     return empty;
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	private static String getSize(File f){
 		String size = "";
 		
-		if(f.exists()){
-			
-			long bytes = f.length();
-			long kilobytes = (bytes / 1024);
-			long megabytes = (kilobytes / 1024);
-			long gigabytes = (megabytes / 1024);
-			long terabytes = (gigabytes / 1024);
-			long petabytes = (terabytes / 1024);
-			long exabytes = (petabytes / 1024);
-			long zettabytes = (exabytes / 1024);
-			long yottabytes = (zettabytes / 1024);
-			
-			if(bytes < 1000){
-				size = bytes + " bytes";
-			}else if(kilobytes < 1000){
-				size = kilobytes + " KB";
-			}else if(megabytes < 1000){
-				size = megabytes + "MB";
-			}else if(megabytes < 1000){
-				size = gigabytes + "GB";
-			}else if(gigabytes < 1000){
-				size = terabytes + "TB";
-			}	
+		try{
+			if(f.exists()){
+				
+				long bytes = f.length();
+				long kilobytes = (bytes / 1024);
+				long megabytes = (kilobytes / 1024);
+				long gigabytes = (megabytes / 1024);
+				long terabytes = (gigabytes / 1024);
+				
+				if(bytes < 1000){
+					size = bytes + " bytes";
+				}else if(kilobytes < 1000){
+					size = kilobytes + " KB";
+				}else if(megabytes < 1000){
+					size = megabytes + "MB";
+				}else if(megabytes < 1000){
+					size = gigabytes + "GB";
+				}else if(gigabytes < 1000){
+					size = terabytes + "TB";
+				}	
+			}
+			return size;
+		}catch (IOException e){
+			System.out.println(e.getMessage());
 		}
-
-		return size;
 	}
 	
-	private static String getDateCreated( File f ) throws IOException {
+	private static String getDateCreated( File f ){
 		Path path = f.toPath();
 		BasicFileAttributes attr;
 		String date = "";
-		 
-	    attr = Files.readAttributes(path, BasicFileAttributes.class);
-	    date = "Date Created: " + attr.creationTime().toString().substring(0, 10);
+		
+		try{
+			attr = Files.readAttributes(path, BasicFileAttributes.class);
+		    date = attr.creationTime().toString().substring(0, 10);
 
-	    return date;
+		    return date;
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	private static String getDateModified( File f ) throws IOException {
+	private static String getDateModified( File f ){
 		 Path path = f.toPath();
 		 BasicFileAttributes attr;
 		 String date = "";
 		 
-	    attr = Files.readAttributes(path, BasicFileAttributes.class);
-	    date = "Date Modified: " + attr.lastModifiedTime().toString().substring(0, 10);
+		 try{
+			attr = Files.readAttributes(path, BasicFileAttributes.class);
+		    date = attr.lastModifiedTime().toString().substring(0, 10);
 
-	    return date;
+		    return date;
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	private static String getUser( File f ) throws IOException {
+	private static String getUser( File f ){
 		String name[];
-		UserPrincipal owner = Files.getOwner(f.toPath());
 		
-		name = owner.getName().split("-");
-		name[0] = "User: " + name[0];
-		
-		return name[0];
+		try{
+			UserPrincipal owner = Files.getOwner(f.toPath());
+			name = owner.getName().split("-");
+			
+			return name[0];
+		}catch (IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
+	
+	private static void compileCFile(String currPath, String fileName){
+        String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0];
+        
+        try{
+            System.out.println("Compiling C File...");
+
+            Process process = Runtime.getRuntime().exec(Command);
+
+            BufferedReader Error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String error = Error.readLine();
+            if (error != null)
+                System.out.println("Error: " + error);
+
+            BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String output = Run.readLine();
+            if (output != null)
+                System.out.println("Output: " + output);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void runCFile(String currPath, String fileName){
+        String Command = "cmd.exe /C cd " + currPath + " && " + fileName.split(".c")[0];
+
+        try{
+            System.out.println("Running C File...");
+
+            Process process = Runtime.getRuntime().exec(Command);
+
+            BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String error = Run.readLine();
+            if (error != null)
+                System.out.println("Error: " + error);
+
+            BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String output = Result.readLine();
+            if (output != null)
+                System.out.println("Output: \n" + output + "\n");
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 	
 	public boolean errorChecking(String[] line){
 		//added this variable
