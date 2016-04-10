@@ -31,6 +31,7 @@ public class cmdGUI{
 	private String input;
 	private String parameter1 = "";
 	private String parameter2 = "";
+	private String currPath = "C:";
 	
 	private ArrayList<String> inputs = new ArrayList<String>();
 	
@@ -66,7 +67,7 @@ public class cmdGUI{
 				System.out.println("Input: ");
 				input = txtInput.getText();						// scans input 
 				System.out.println("Your input is: " + input);	// for checking
-				String currPath = "C:";
+				
 				boolean error = false;
 				
 				String[] line = input.split(" ");				// splits the whole line per word
@@ -229,6 +230,10 @@ public class cmdGUI{
 									System.out.println("This directory contains 0 files.");
 									txtCMD.setText(txtCMD.getText().concat("This directory contains 0 files.\n"));
 								}
+								
+								txtCMD.setText(txtCMD.getText().concat("   Free Space: " + dir.getFreeSpace() + " bytes\n"));
+								txtCMD.setText(txtCMD.getText().concat("   Used Space: " + (dir.getTotalSpace() - dir.getUsableSpace()) + " bytes\n"));
+								
 								System.out.println("");
 								txtCMD.setText(txtCMD.getText().concat("\n"));
 								break;
@@ -304,7 +309,7 @@ public class cmdGUI{
 		 File[] filesList = dir.listFiles();
 		 boolean empty = true;
 		 
-		 try{
+//		 try{
 			 for(File f : filesList){
 	            if(f.isFile()){
 	            	String file = "";
@@ -332,15 +337,15 @@ public class cmdGUI{
 	            }
 		     }
 		     return empty;
-		}catch (IOException e){
-			System.out.println(e.getMessage());
-		}
+//		}catch (Exception e){
+//			System.out.println(e.getMessage());
+//		}
 	}
 	
 	private static String getSize(File f){
 		String size = "";
 		
-		try{
+//		try{
 			if(f.exists()){
 				
 				long bytes = f.length();
@@ -355,16 +360,16 @@ public class cmdGUI{
 					size = kilobytes + " KB";
 				}else if(megabytes < 1000){
 					size = megabytes + "MB";
-				}else if(megabytes < 1000){
-					size = gigabytes + "GB";
 				}else if(gigabytes < 1000){
+					size = gigabytes + "GB";
+				}else if(terabytes < 1000){
 					size = terabytes + "TB";
 				}	
 			}
 			return size;
-		}catch (IOException e){
-			System.out.println(e.getMessage());
-		}
+//		}catch (Exception e){
+//			System.out.println(e.getMessage());
+//		}
 	}
 	
 	private static String getDateCreated( File f ){
@@ -375,11 +380,10 @@ public class cmdGUI{
 		try{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
 		    date = attr.creationTime().toString().substring(0, 10);
-
-		    return date;
 		}catch (IOException e){
 			System.out.println(e.getMessage());
 		}
+		return date;
 	}
 	
 	private static String getDateModified( File f ){
@@ -389,67 +393,77 @@ public class cmdGUI{
 		 
 		 try{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
-		    date = attr.lastModifiedTime().toString().substring(0, 10);
-
-		    return date;
+		    date = attr.lastModifiedTime().toString().substring(0, 10);		    
 		}catch (IOException e){
 			System.out.println(e.getMessage());
 		}
+		 return date;
 	}
 	
 	private static String getUser( File f ){
-		String name[];
+		String name = null;
+		UserPrincipal owner = null;
 		
 		try{
-			UserPrincipal owner = Files.getOwner(f.toPath());
-			name = owner.getName().split("-");
-			
-			return name[0];
+			owner = Files.getOwner(f.toPath());
+			name = owner.getName();
 		}catch (IOException e){
 			System.out.println(e.getMessage());
 		}
+		
+		return name;
 	}
 	
-	private static void compileCFile(String currPath, String fileName){
+	private void compileCFile(String currPath, String fileName){
         String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0];
         
         try{
             System.out.println("Compiling C File...");
+            txtCMD.setText(txtCMD.getText().concat("Compiling C File...\n"));
 
             Process process = Runtime.getRuntime().exec(Command);
 
             BufferedReader Error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String error = Error.readLine();
-            if (error != null)
+            if (error != null){
                 System.out.println("Error: " + error);
+                txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
+            }
 
             BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String output = Run.readLine();
-            if (output != null)
+            if (output != null){
                 System.out.println("Output: " + output);
+                txtCMD.setText(txtCMD.getText().concat("Output: " + output + "\n"));
+            }
 
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
 
-    private static void runCFile(String currPath, String fileName){
+    private void runCFile(String currPath, String fileName){
         String Command = "cmd.exe /C cd " + currPath + " && " + fileName.split(".c")[0];
 
         try{
             System.out.println("Running C File...");
+            txtCMD.setText(txtCMD.getText().concat("Running C File...\n"));
 
             Process process = Runtime.getRuntime().exec(Command);
 
             BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String error = Run.readLine();
-            if (error != null)
+            if (error != null){
                 System.out.println("Error: " + error);
+                txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
+            }
 
             BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String output = Result.readLine();
-            if (output != null)
+            if (output != null){
                 System.out.println("Output: \n" + output + "\n");
+                txtCMD.setText(txtCMD.getText().concat("Output: \n" + output + "\n\n"));
+            }
 
         }catch (Exception e){
             System.out.println(e.getMessage());
