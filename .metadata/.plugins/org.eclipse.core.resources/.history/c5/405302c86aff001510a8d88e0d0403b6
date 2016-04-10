@@ -361,10 +361,18 @@ public class cmdGUI{
 		        	}
 	            }
 		     }
+<<<<<<< HEAD
 		     return empty;
 //		}catch (Exception e){
 //			System.out.println(e.getMessage());
 //		}
+=======
+		     //return empty;
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		return empty;
+>>>>>>> 2a57591e7f2a73b0b5a6272d69be1f5cda580d02
 	}
 	
 	private static String getSize(File f){
@@ -391,11 +399,18 @@ public class cmdGUI{
 					size = terabytes + "TB";
 				}	
 			}
+<<<<<<< HEAD
 			return size;
 //		}catch (Exception e){
 //			System.out.println(e.getMessage());
 //		}
+=======
 			//return size;
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		return size;
+>>>>>>> 2a57591e7f2a73b0b5a6272d69be1f5cda580d02
 	}
 	
 	private static String getDateCreated( File f ){
@@ -406,7 +421,13 @@ public class cmdGUI{
 		try{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
 		    date = attr.creationTime().toString().substring(0, 10);
+<<<<<<< HEAD
+		}catch (IOException e){
+=======
+
+		    //return date;
 		}catch (Exception e){
+>>>>>>> 2a57591e7f2a73b0b5a6272d69be1f5cda580d02
 			System.out.println(e.getMessage());
 		}
 		return date;
@@ -419,6 +440,7 @@ public class cmdGUI{
 		 
 		 try{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
+<<<<<<< HEAD
 		    date = attr.lastModifiedTime().toString().substring(0, 10);		    
 		}catch (IOException e){
 			System.out.println(e.getMessage());
@@ -438,6 +460,29 @@ public class cmdGUI{
 		}
 		
 		return name;
+=======
+		    date = attr.lastModifiedTime().toString().substring(0, 10);
+
+		    //return date;
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		return date;
+	}
+	
+	private static String getUser( File f ){
+		String name[] = null;
+		
+		try{
+			UserPrincipal owner = Files.getOwner(f.toPath());
+			name = owner.getName().split("-");
+			
+			//return name[0];
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		return name[0];
+>>>>>>> 2a57591e7f2a73b0b5a6272d69be1f5cda580d02
 	}
 	
 	private void compileCFile(String currPath, String fileName){
