@@ -26,7 +26,7 @@ public class cmdGUI{
 	private JFrame frameMain = new JFrame("INTROOS");
 	private JPanel panelMain = new JPanel();
 	private JScrollPane scrlMain = new JScrollPane();
-	private JTextPane txtCMD = new JTextPane();
+	private static JTextPane txtCMD = new JTextPane();
 	private JTextField txtInput = new JTextField();
 	private String input;
 	private String parameter1 = "";
@@ -135,16 +135,41 @@ public class cmdGUI{
 									}
 									
 									if (error == false){
-										File s = new File(parameter1);
-										File d = new File(parameter2);
+										boolean path1 = false;
+										boolean path2 = false;
+										switch (line[0].toLowerCase())
+										{
+											case "copy":
+											case "move":
+												if (parameter1.toLowerCase().charAt(0) >= 'a' && parameter1.toLowerCase().charAt(0) <= 'z' && parameter1.toLowerCase().charAt(1) == ':'){
+													File f = new File(parameter1);
+													if (f.isFile())
+														path1 = true;
+												}
+												if (parameter2.toLowerCase().charAt(0) >= 'a' && parameter2.toLowerCase().charAt(0) <= 'z' && parameter2.toLowerCase().charAt(1) == ':'){
+													path2 = true;
+												}
+												
+												if (path1 && path2){
+													File s = new File(parameter1);
+													File d = new File(parameter2);
+													
+													switch (line[0].toLowerCase()){
+														case "copy":	copyFile(s, d);
+																		break;
+														case "move":	moveFile(s, d);
+																		break;
+													}
+												}
+												break;
 										
-										switch (line[0].toLowerCase()){
-											case "copy":	copyFile(s, d);
-															break;
-											case "move":	moveFile(s, d);
-															break;
-											case "ren":		// rename function
-															break;
+											case "ren":
+												File s = new File(currPath + "\\" + parameter1);
+												if (s.isFile()){
+													File d = new File (currPath + "\\" + parameter2);
+													moveFile(s, d);
+												}
+												break;
 										}
 									}
 									else{
@@ -300,7 +325,7 @@ public class cmdGUI{
 	    deleteFile(from);
 	}
 	
-	private boolean showContents( File dir ){
+	private static boolean showContents( File dir ){
 		 File[] filesList = dir.listFiles();
 		 boolean empty = true;
 		 
@@ -331,10 +356,11 @@ public class cmdGUI{
 		        	}
 	            }
 		     }
-		     return empty;
-		}catch (IOException e){
+		     //return empty;
+		}catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		return empty;
 	}
 	
 	private static String getSize(File f){
@@ -361,10 +387,11 @@ public class cmdGUI{
 					size = terabytes + "TB";
 				}	
 			}
-			return size;
-		}catch (IOException e){
+			//return size;
+		}catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		return size;
 	}
 	
 	private static String getDateCreated( File f ){
@@ -376,10 +403,11 @@ public class cmdGUI{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
 		    date = attr.creationTime().toString().substring(0, 10);
 
-		    return date;
-		}catch (IOException e){
+		    //return date;
+		}catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		return date;
 	}
 	
 	private static String getDateModified( File f ){
@@ -391,23 +419,25 @@ public class cmdGUI{
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
 		    date = attr.lastModifiedTime().toString().substring(0, 10);
 
-		    return date;
-		}catch (IOException e){
+		    //return date;
+		}catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		return date;
 	}
 	
 	private static String getUser( File f ){
-		String name[];
+		String name[] = null;
 		
 		try{
 			UserPrincipal owner = Files.getOwner(f.toPath());
 			name = owner.getName().split("-");
 			
-			return name[0];
-		}catch (IOException e){
+			//return name[0];
+		}catch (Exception e){
 			System.out.println(e.getMessage());
 		}
+		return name[0];
 	}
 	
 	private static void compileCFile(String currPath, String fileName){
