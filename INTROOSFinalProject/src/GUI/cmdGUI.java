@@ -115,15 +115,19 @@ public class cmdGUI{
 												}
 											}
 											if (quote == true){
-												for (int a = i; a <= b; a++)
+												for (int a = i; a <= b; a++){
 													parameter2 = parameter2 + " " + line[a];
+												}
+												i = b;
 												parameter2 = parameter2.substring(2, parameter2.length()-1);
 											}
 										}
 										else
 											parameter2 = line[i];
-										
-										if (line[i++].equals(null) == false){
+										System.out.println("I is " + i);
+										i++;
+										if (i != line.length && line[i].equals(null) == false){
+											System.out.println(line[i]);
 											error = true;
 											System.out.println("Sobra parameters!");
 										}
@@ -144,21 +148,30 @@ public class cmdGUI{
 											case "move":
 												if (parameter1.toLowerCase().charAt(0) >= 'a' && parameter1.toLowerCase().charAt(0) <= 'z' && parameter1.toLowerCase().charAt(1) == ':'){
 													File f = new File(parameter1);
+													System.out.println("HELLO");
 													if (f.isFile())
 														path1 = true;
+													System.out.println(path1);
 												}
 												if (parameter2.toLowerCase().charAt(0) >= 'a' && parameter2.toLowerCase().charAt(0) <= 'z' && parameter2.toLowerCase().charAt(1) == ':'){
 													path2 = true;
+													System.out.println(path2);
 												}
 												
 												if (path1 && path2){
 													File s = new File(parameter1);
 													File d = new File(parameter2);
 													
+													System.out.println("Inst: " + line[0]);
+													System.out.println("Par1: " + parameter1);
+													System.out.println("Par2: " + parameter2);
+													
 													switch (line[0].toLowerCase()){
 														case "copy":	copyFile(s, d);
+														System.out.println("COPIED");
 																		break;
 														case "move":	moveFile(s, d);
+														System.out.println("MOVED");
 																		break;
 													}
 												}
