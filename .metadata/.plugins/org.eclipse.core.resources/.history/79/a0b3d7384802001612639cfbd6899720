@@ -334,8 +334,8 @@ public class cmdGUI {
 						
 						System.out.println("File is: " + name);
 
-						if(!compileCFile(currPath, name))
-							runCFile(currPath, name);
+						compileCFile(currPath, name);
+						runCFile(currPath, name);
 					}
 					break;
 				case "":
@@ -523,9 +523,9 @@ public class cmdGUI {
 		return name;
 	}
 
-	private boolean compileCFile(String currPath, String fileName) {
+	private void compileCFile(String currPath, String fileName) {
 		String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0] + ".exe";
-		boolean er = false;
+
 		try {
 			System.out.println("Compiling C File...");
 			txtCMD.setText(txtCMD.getText().concat("Compiling C File...\n"));
@@ -534,11 +534,9 @@ public class cmdGUI {
 
 			BufferedReader Error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			String error = Error.readLine();
-			while (error != null) {
-				er = true;
+			if (error != null) {
 				System.out.println("Error: " + error);
 				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
-				error = Error.readLine();
 			}
 
 			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -551,7 +549,6 @@ public class cmdGUI {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		return er;
 	}
 
 	private void runCFile(String currPath, String fileName) {
@@ -565,10 +562,9 @@ public class cmdGUI {
 
 			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			String error = Run.readLine();
-			while(error != null) {
+			if (error != null) {
 				System.out.println("Error: " + error);
 				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
-				error = Run.readLine();
 			}
 
 			BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -578,8 +574,8 @@ public class cmdGUI {
 				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
 			}
 			while (output != null){
-				System.out.println(output);
-				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
+				System.out.println();
+				txtCMD.setText(txtCMD.getText().concat(output));
 				
 				output = Result.readLine();
 			}

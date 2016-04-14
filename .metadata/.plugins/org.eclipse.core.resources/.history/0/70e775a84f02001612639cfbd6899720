@@ -578,8 +578,8 @@ public class cmdGUI {
 				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
 			}
 			while (output != null){
-				System.out.println(output);
-				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
+				System.out.println("1" + output);
+				txtCMD.setText(txtCMD.getText().concat(output));
 				
 				output = Result.readLine();
 			}

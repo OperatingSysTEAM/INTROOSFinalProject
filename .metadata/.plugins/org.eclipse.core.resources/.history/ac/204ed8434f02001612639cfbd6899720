@@ -560,30 +560,34 @@ public class cmdGUI {
 		try {
 			System.out.println("Running C File...");
 			txtCMD.setText(txtCMD.getText().concat("Running C File...\n"));
+			
+			ProcessBuilder p = new ProcessBuilder();
+			p.command(currPath + "\\" + fileName.split(".c")[0] + ".exe");
+			p.start();
 
-			Process process = Runtime.getRuntime().exec(Command);
+//			Process process = Runtime.getRuntime().exec(Command);
 
-			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			String error = Run.readLine();
-			while(error != null) {
-				System.out.println("Error: " + error);
-				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
-				error = Run.readLine();
-			}
-
-			BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String output = Result.readLine();
-			if(output != null){
-				System.out.println("Output: ");
-				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
-			}
-			while (output != null){
-				System.out.println(output);
-				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
-				
-				output = Result.readLine();
-			}
-			txtCMD.setText(txtCMD.getText().concat("\n"));
+//			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//			String error = Run.readLine();
+//			while(error != null) {
+//				System.out.println("Error: " + error);
+//				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
+//				error = Run.readLine();
+//			}
+//
+//			BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//			String output = Result.readLine();
+//			if(output != null){
+//				System.out.println("Output: ");
+//				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
+//			}
+//			while (output != null){
+//				System.out.println(output);
+//				txtCMD.setText(txtCMD.getText().concat(output));
+//				
+//				output = Result.readLine();
+//			}
+//			txtCMD.setText(txtCMD.getText().concat("\n"));
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

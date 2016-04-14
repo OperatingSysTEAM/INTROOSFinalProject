@@ -334,7 +334,7 @@ public class cmdGUI {
 						
 						System.out.println("File is: " + name);
 
-						if(!compileCFile(currPath, name))
+						if(compileCFile(currPath, name))
 							runCFile(currPath, name);
 					}
 					break;
@@ -579,7 +579,7 @@ public class cmdGUI {
 			}
 			while (output != null){
 				System.out.println(output);
-				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
+				txtCMD.setText(txtCMD.getText().concat(output));
 				
 				output = Result.readLine();
 			}

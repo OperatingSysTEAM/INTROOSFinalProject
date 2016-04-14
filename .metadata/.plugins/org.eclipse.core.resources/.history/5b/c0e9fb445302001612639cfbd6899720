@@ -13,9 +13,11 @@ import javax.swing.AbstractAction;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -563,27 +565,54 @@ public class cmdGUI {
 
 			Process process = Runtime.getRuntime().exec(Command);
 
-			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			String error = Run.readLine();
-			while(error != null) {
-				System.out.println("Error: " + error);
-				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
-				error = Run.readLine();
-			}
+//			BufferedReader Run = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//			String error = Run.readLine();
+//			while(error != null) {
+//				System.out.println("Error: " + error);
+//				txtCMD.setText(txtCMD.getText().concat("Error: " + error + "\n"));
+//				error = Run.readLine();
+//			}
+//
+//			BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//			String output = Result.readLine();
+//			if(output != null){
+//				System.out.println("Output: ");
+//				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
+//			}
+//			while (output != null){
+//				System.out.println(output);
+//				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
+//				
+//				output = Result.readLine();
+//			}
+//			txtCMD.setText(txtCMD.getText().concat("\n"));
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+			char c;
+			int exitVal;
+			
+			do {
+				 c = (char) reader.read();
+				   System.out.print(c);
+				} while (c != '\n' && c != -1 && c != Character.MAX_VALUE);
+				System.out.print('\n');
+				System.out.print("(1) stdout of subprocess consumed.");
 
-			BufferedReader Result = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String output = Result.readLine();
-			if(output != null){
-				System.out.println("Output: ");
-				txtCMD.setText(txtCMD.getText().concat("Output: \n"));
-			}
-			while (output != null){
-				System.out.println(output);
-				txtCMD.setText(txtCMD.getText().concat(output + "\n"));
-				
-				output = Result.readLine();
-			}
-			txtCMD.setText(txtCMD.getText().concat("\n"));
+				c = (char) System.in.read();
+				writer.write(c);
+				writer.flush();
+
+
+				do {
+				 c = (char) reader.read();
+				   System.out.print(c);
+				} while (c != '\n' && c != -1 && c != Character.MAX_VALUE);
+				System.out.print('\n');
+				System.out.print("(2) stdout of subprocess consumed.");
+
+				exitVal = process.waitFor();
+				System.out.println("Exited with error code " + exitVal);
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
