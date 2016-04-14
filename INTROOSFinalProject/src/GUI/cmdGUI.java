@@ -196,6 +196,7 @@ public class cmdGUI {
 
 								switch (line[0].toLowerCase()) {
 								case "copy":
+									System.out.println("About to copy");
 									copyFile(s, d);
 									System.out.println("COPIED");
 									break;
