@@ -331,6 +331,8 @@ public class cmdGUI {
 						for (i = 1; i < line.length; i++)
 							name = line[i] + " ";
 						name = name.substring(0, name.length() - 1);
+						
+						System.out.println("File is: " + name);
 
 						compileCFile(currPath, name);
 						runCFile(currPath, name);
@@ -522,7 +524,7 @@ public class cmdGUI {
 	}
 
 	private void compileCFile(String currPath, String fileName) {
-		String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0];
+		String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0] + ".exe";
 
 		try {
 			System.out.println("Compiling C File...");
