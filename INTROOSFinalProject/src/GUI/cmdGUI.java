@@ -173,6 +173,7 @@ public class cmdGUI {
 						switch (line[0].toLowerCase()) {
 						case "copy":
 						case "move":
+							System.out.println("Entered!");
 							if (parameter1.toLowerCase().charAt(0) >= 'a' && parameter1.toLowerCase().charAt(0) <= 'z'
 									&& parameter1.toLowerCase().charAt(1) == ':') {
 								File f = new File(parameter1);
@@ -180,6 +181,13 @@ public class cmdGUI {
 								if (f.isFile())
 									path1 = true;
 								System.out.println(path1);
+							}
+							if (path1 == false){
+								File f = new File(currPath + "\\" + parameter1);
+								parameter1 = currPath + "\\" + parameter1;
+								if (f.isFile())
+									path1 = true;
+								System.out.println("Path 1 for real " + path1);
 							}
 							if (parameter2.toLowerCase().charAt(0) >= 'a' && parameter2.toLowerCase().charAt(0) <= 'z'
 									&& parameter2.toLowerCase().charAt(1) == ':') {
