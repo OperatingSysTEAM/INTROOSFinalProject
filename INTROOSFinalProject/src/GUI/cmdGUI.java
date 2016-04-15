@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 public class cmdGUI {
 	private JFrame frameMain = new JFrame("INTROOS");
+	private JFrame editFrame = new JFrame("");
 	private JPanel panelMain = new JPanel();
 	private JScrollPane scrlMain = new JScrollPane();
 	private static JTextPane txtCMD = new JTextPane();
@@ -334,9 +335,26 @@ public class cmdGUI {
 						
 						System.out.println("File is: " + name);
 
-						if(!compileCFile(currPath, name))
+						if(!compileCFile(currPath, name));
 							runCFile(currPath, name);
 					}
+					break;
+				case "edit":
+					if(line.length > 1){
+						String in = line[1];
+						for(i = 2; i < line.length; i++)
+							in += " " + line[i];
+						in = currPath + "\\" + in;
+						File s = new File(in);
+						if(s.exists()){
+							frameMain.setEnabled(false);
+							new edit(in);
+							frameMain.setEnabled(true);
+						}	
+						else
+							txtCMD.setText(txtCMD.getText().concat("There is no such file!\n\n"));
+					}else
+						txtCMD.setText(txtCMD.getText().concat("Missing parameter!\n\n"));
 					break;
 				case "":
 					break;
@@ -420,10 +438,10 @@ public class cmdGUI {
 			if (f.isFile()) {
 				String file = "";
 				file += getDateCreated(f) + "     " + getDateModified(f) + "      " + getSize(f);
-				for (int i = file.length(); i < 42; i++)
+				for (int i = file.length(); i < 52; i++)
 					file += " ";
 				file += getUser(f) + "     ";
-				for (int i = file.length(); i < 55; i++)
+				for (int i = file.length(); i < 65; i++)
 					file += " ";
 				file += f.getName();
 				String name = f.getName();
@@ -452,11 +470,12 @@ public class cmdGUI {
 
 	private static String getSize(File f) {
 		String size = "";
-
+		long total = f.getTotalSpace();
+		long bytes = f.length();
 		// try{
 		if (f.exists()) {
 
-			long bytes = f.length();
+//			long bytes = f.length();
 			long kilobytes = (bytes / 1024);
 			long megabytes = (kilobytes / 1024);
 			long gigabytes = (megabytes / 1024);
@@ -474,6 +493,8 @@ public class cmdGUI {
 				size = terabytes + " TB";
 			}
 		}
+		float p = (((float) bytes) / ((float) total)) * 100;
+		size += " " + String.format("%f", p) + "% ";
 		return size;
 		// }catch (Exception e){
 		// System.out.println(e.getMessage());
@@ -555,8 +576,7 @@ public class cmdGUI {
 	}
 
 	private void runCFile(String currPath, String fileName) {
-		String Command = "cmd.exe /C cd " + currPath + " && " + fileName.split(".c")[0];
-
+		String Command = "cmd.exe /c start " + currPath + "\\" + fileName.split(".c")[0] + ".exe";
 		try {
 			System.out.println("Running C File...");
 			txtCMD.setText(txtCMD.getText().concat("Running C File...\n"));
@@ -632,5 +652,9 @@ public class cmdGUI {
 			break;
 		}
 		return error;
+	}
+	
+	public JFrame getFrame(){
+		return this.frameMain;
 	}
 }

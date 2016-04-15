@@ -1,0 +1,10 @@
+package main;
+
+import javax.swing.JFrame;
+
+public class edit {
+	private JFrame editframe = new JFrame();
+	public edit(){
+		
+	}
+}
