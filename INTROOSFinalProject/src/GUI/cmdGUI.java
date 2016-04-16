@@ -22,6 +22,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
 
+/**
+*
+* User interface and functions for the File Manager
+* @author Lim, Gaw, Castillo, Hernandez
+*
+*/
 public class cmdGUI {
 	private JFrame frameMain = new JFrame("INTROOS");
 	private JFrame editFrame = new JFrame("");
@@ -36,6 +42,13 @@ public class cmdGUI {
 
 	private ArrayList<String> inputs = new ArrayList<String>();
 
+	/*
+	*
+	* Constructor for the user interface
+	* Acts as the main method of the program
+	* All error checking, input, parameter setting, and alike are done here.
+	*
+	*/
 	public cmdGUI() {
 		panelMain.setLayout(new MigLayout("", "[927.00,grow]", "[435.00,grow][35px:35px]"));
 
@@ -396,6 +409,11 @@ public class cmdGUI {
 		});
 	}
 
+	/**
+	 * Method for copying files
+	 * @param from File variable ; file to copy
+	 * @param to File variable ; destination
+	 */
 	private static void copyFile(File from, File to) {
 		int nCopy = 0;
 		String p = to.getAbsolutePath().toString();
@@ -424,6 +442,10 @@ public class cmdGUI {
 		}
 	}
 
+	/**
+	 * Method for deleting files (permanent deletion)
+	 * @param from File variable ; file to be deleted
+	 */
 	private static void deleteFile(File from) {
 		try {
 			Files.delete(from.toPath());
@@ -432,11 +454,21 @@ public class cmdGUI {
 		}
 	}
 
+	/**
+	 * Method for moving files
+	 * @param from File variable ; file to move
+	 * @param to File variable ; destination
+	 */
 	private static void moveFile(File from, File to) {
 		copyFile(from, to);
 		deleteFile(from);
 	}
 
+	/**
+	 * Method for showing the contents of the current directory
+	 * @param dir File variable
+	 * @return
+	 */
 	private static boolean showContents(File dir) {
 		File[] filesList = dir.listFiles();
 		boolean empty = true;
@@ -476,6 +508,11 @@ public class cmdGUI {
 		// }
 	}
 
+	/**
+	 * Method for obtaining the size of a file ; used for showContents method
+	 * @param f File variable
+	 * @return
+	 */
 	private static String getSize(File f) {
 		String size = "";
 		long total = f.getTotalSpace();
@@ -510,6 +547,11 @@ public class cmdGUI {
 		// return size;
 	}
 
+	/**
+	 * Method used for obtaining the date of creation of a file ; used in showContents method
+	 * @param f File variable
+	 * @return
+	 */
 	private static String getDateCreated(File f) {
 		Path path = f.toPath();
 		BasicFileAttributes attr;
@@ -524,6 +566,11 @@ public class cmdGUI {
 		return date;
 	}
 
+	/**
+	 * Method used for obtaining the date of last modification of a file ; used in showContents method
+	 * @param f File variable
+	 * @return
+	 */
 	private static String getDateModified(File f) {
 		Path path = f.toPath();
 		BasicFileAttributes attr;
@@ -538,6 +585,11 @@ public class cmdGUI {
 		return date;
 	}
 
+	/**
+	 * Method used for obtaining the user/author of a file ; used in showContents method
+	 * @param f File variable
+	 * @return
+	 */
 	private static String getUser(File f) {
 		String name = null;
 		UserPrincipal owner = null;
@@ -552,6 +604,12 @@ public class cmdGUI {
 		return name;
 	}
 
+	/**
+	 * Method for compiling C files
+	 * @param currPath String variable ; current path or directory
+	 * @param fileName String variable ; filename of the C source code to compile
+	 * @return
+	 */
 	private boolean compileCFile(String currPath, String fileName) {
 		String Command = "cmd.exe /C cd " + currPath + " && gcc " + fileName + " -o " + fileName.split(".c")[0] + ".exe";
 		boolean er = false;
@@ -583,6 +641,11 @@ public class cmdGUI {
 		return er;
 	}
 
+	/**
+	 * Method for running/executing C files
+	 * @param currPath String variable ; current path or directory
+	 * @param fileName String variable ; filename of the compiled C source code to execute
+	 */
 	private void runCFile(String currPath, String fileName) {
 		String Command = "cmd.exe /c start " + currPath + "\\" + fileName.split(".c")[0] + ".exe";
 		try {
@@ -618,6 +681,11 @@ public class cmdGUI {
 		}
 	}
 
+	/**
+	 * Method used for error checking
+	 * @param line String array variable ; input
+	 * @return
+	 */
 	public boolean errorChecking(String[] line) {
 		// added this variable
 		boolean error = false;
@@ -662,6 +730,10 @@ public class cmdGUI {
 		return error;
 	}
 	
+	/**
+	 * Getter method for this JFrame
+	 * @return
+	 */
 	public JFrame getFrame(){
 		return this.frameMain;
 	}

@@ -15,9 +15,19 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
+/**
+ * Class used for editing a file
+ * @author Patricia
+ *
+ */
 public class edit {
 	private JFrame editframe = new JFrame("Edit");
 //	cmdGUI cmdgui = new cmdGUI();
+	
+	/**
+	 * Constructor of the edit class
+	 * @param file
+	 */
 	public edit(String file){
 //        cmdgui.getFrame().setEnabled(false);
 //        cmdgui.getFrame().setVisible(false);
